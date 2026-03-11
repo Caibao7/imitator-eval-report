@@ -1,0 +1,108 @@
+{
+  "experiments": [
+    {
+      "key": "train",
+      "label": "Train",
+      "subtitle": "L0 + L1 (训练任务)",
+      "tasks": 60,
+      "success_once": 0.1,
+      "success_at_end": 0.05,
+      "avg_return": 16.9,
+      "avg_reward": 0.033800000000000004
+    },
+    {
+      "key": "test1",
+      "label": "Test1",
+      "subtitle": "L2 + L3（跨难度泛化）",
+      "tasks": 60,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "key": "test2",
+      "label": "Test2",
+      "subtitle": "L0 – L3（新技能泛化）",
+      "tasks": 80,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    }
+  ],
+  "level_rows": [
+    {
+      "experiment": "Train",
+      "level": "L0",
+      "tasks": 30,
+      "success_once": 0.06666666666666667,
+      "success_at_end": 0.03333333333333333,
+      "avg_return": 15.8,
+      "avg_reward": 0.031599999999999996
+    },
+    {
+      "experiment": "Train",
+      "level": "L1",
+      "tasks": 30,
+      "success_once": 0.13333333333333333,
+      "success_at_end": 0.06666666666666667,
+      "avg_return": 18.0,
+      "avg_reward": 0.036000000000000004
+    },
+    {
+      "experiment": "Test1",
+      "level": "L2",
+      "tasks": 30,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "experiment": "Test1",
+      "level": "L3",
+      "tasks": 30,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "experiment": "Test2",
+      "level": "L0",
+      "tasks": 20,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "experiment": "Test2",
+      "level": "L1",
+      "tasks": 20,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "experiment": "Test2",
+      "level": "L2",
+      "tasks": 20,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    },
+    {
+      "experiment": "Test2",
+      "level": "L3",
+      "tasks": 20,
+      "success_once": 0.0,
+      "success_at_end": 0.0,
+      "avg_return": 0.0,
+      "avg_reward": 0.0
+    }
+  ]
+}

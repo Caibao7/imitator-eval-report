@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DP 三实验汇总看板</title>
+  <style>
+    :root {
+      --bg: #060b14;
+      --panel: linear-gradient(180deg, rgba(15, 24, 38, 0.98), rgba(10, 18, 30, 0.96));
+      --line: rgba(76, 97, 123, 0.35);
+      --text: #eef3ff;
+      --muted: #7f92ae;
+      --blue: #4da3ff;
+      --green: #2ee86b;
+      --orange: #ff985c;
+      --purple: #d090ff;
+      --blue-bg: rgba(77, 163, 255, 0.12);
+      --green-bg: rgba(46, 232, 107, 0.12);
+      --orange-bg: rgba(255, 152, 92, 0.12);
+      --purple-bg: rgba(208, 144, 255, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(32, 82, 168, 0.18), transparent 26%),
+        radial-gradient(circle at top right, rgba(43, 170, 97, 0.08), transparent 20%),
+        linear-gradient(180deg, #050912 0%, #060b14 100%);
+    }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 28px 24px 40px; }
+    .eyebrow {
+      color: var(--blue);
+      font-weight: 800;
+      letter-spacing: .18em;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    h1, h2 { margin: 0; }
+    h1 {
+      font-size: 42px;
+      line-height: 1.1;
+      margin-bottom: 22px;
+    }
+    h2 {
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(77,163,255,.95), rgba(255,152,92,.95));
+    }
+    .card .tag {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .card .title {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .card .subtitle {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .metric {
+      margin-bottom: 16px;
+    }
+    .metric:last-child {
+      margin-bottom: 0;
+    }
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: .03em;
+    }
+    .meter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .track {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+    .metric .value {
+      min-width: 66px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+      opacity: .9;
+    }
+    .section {
+      margin-top: 8px;
+    }
+    .table-wrap {
+      background: linear-gradient(180deg, rgba(8, 14, 24, 0.98), rgba(6, 12, 22, 0.98));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      padding: 14px 14px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: #6d89ad;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(90, 110, 138, 0.24);
+    }
+    tbody td {
+      padding: 14px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 15px;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .exp-name {
+      font-weight: 800;
+    }
+    .exp-train { color: var(--blue); }
+    .exp-test1 { color: #52e07a; }
+    .exp-test2 { color: #ff7d57; }
+    .level-badge {
+      display: inline-block;
+      min-width: 30px;
+      text-align: center;
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .level-l0 { color: #60adff; background: rgba(40, 110, 196, 0.18); }
+    .level-l1 { color: #5af18a; background: rgba(31, 133, 77, 0.18); }
+    .level-l2 { color: #a991ff; background: rgba(96, 74, 176, 0.2); }
+    .level-l3 { color: #ff9c60; background: rgba(181, 102, 42, 0.2); }
+    .metric-blue { color: #78b9ff; font-weight: 800; }
+    .metric-green { color: #48eb79; font-weight: 800; }
+    .metric-orange { color: #ffab69; font-weight: 800; }
+    .metric-purple {
+      color: #d7adff;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(165, 96, 255, 0.12);
+      display: inline-block;
+    }
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      tbody td, thead th { padding: 12px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">$ 01</div>
+    <h1>总体成功率与奖励汇总</h1>
+    <section class="cards" id="cards"></section>
+
+    <div class="eyebrow">$ 02</div>
+    <section class="section">
+      <h2>按难度级别（Level）细化统计</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>实验</th>
+              <th>Level</th>
+              <th>任务数</th>
+              <th>success_once</th>
+              <th>success_at_end</th>
+              <th>avg return</th>
+              <th>avg reward</th>
+            </tr>
+          </thead>
+          <tbody id="level-table"></tbody>
+        </table>
+      </div>
+      <div class="note">
+        Train 使用 `final_batch_eval_result` 的真实结果。Test1 和 Test2 使用配置文件中的任务集合，按你的说明统一记为全 0，因此用于展示跨任务集泛化结果的对比。
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const payload = {"experiments": [{"key": "train", "label": "Train", "subtitle": "L0 + L1 (训练任务)", "tasks": 60, "success_once": 0.1, "success_at_end": 0.05, "avg_return": 16.9, "avg_reward": 0.033800000000000004}, {"key": "test1", "label": "Test1", "subtitle": "L2 + L3（跨难度泛化）", "tasks": 60, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"key": "test2", "label": "Test2", "subtitle": "L0 – L3（新技能泛化）", "tasks": 80, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}], "level_rows": [{"experiment": "Train", "level": "L0", "tasks": 30, "success_once": 0.06666666666666667, "success_at_end": 0.03333333333333333, "avg_return": 15.8, "avg_reward": 0.031599999999999996}, {"experiment": "Train", "level": "L1", "tasks": 30, "success_once": 0.13333333333333333, "success_at_end": 0.06666666666666667, "avg_return": 18.0, "avg_reward": 0.036000000000000004}, {"experiment": "Test1", "level": "L2", "tasks": 30, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"experiment": "Test1", "level": "L3", "tasks": 30, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"experiment": "Test2", "level": "L0", "tasks": 20, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"experiment": "Test2", "level": "L1", "tasks": 20, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"experiment": "Test2", "level": "L2", "tasks": 20, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}, {"experiment": "Test2", "level": "L3", "tasks": 20, "success_once": 0.0, "success_at_end": 0.0, "avg_return": 0.0, "avg_reward": 0.0}]};
+
+    function pct(v) {
+      return (v * 100).toFixed(1) + '%';
+    }
+
+    function fixed(v, n = 2) {
+      return Number(v).toFixed(n);
+    }
+
+    function metricBlock(label, value, type) {
+      const maxMap = {
+        success_once: 1.0,
+        success_at_end: 1.0,
+        avg_return: Math.max(...payload.experiments.map(x => x.avg_return), 1),
+        avg_reward: Math.max(...payload.experiments.map(x => x.avg_reward), 0.001),
+      };
+      const colorMap = {
+        success_once: 'var(--blue)',
+        success_at_end: 'var(--green)',
+        avg_return: 'var(--orange)',
+        avg_reward: 'var(--purple)',
+      };
+      const textMap = {
+        success_once: pct(value),
+        success_at_end: pct(value),
+        avg_return: fixed(value, 2),
+        avg_reward: fixed(value, 4),
+      };
+      const width = Math.max((value / maxMap[type]) * 100, value > 0 ? 3 : 0);
+      return `
+        <div class="metric">
+          <div class="label">${label}</div>
+          <div class="meter">
+            <div class="track"><div class="fill" style="width:${width}%; background:${colorMap[type]}"></div></div>
+            <div class="value">${textMap[type]}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCards() {
+      const subtitles = {
+        train: 'L0 + L1（训练任务）',
+        test1: 'L2 + L3（跨难度泛化）',
+        test2: 'L0 – L3（新技能泛化）',
+      };
+      const cards = document.getElementById('cards');
+      cards.innerHTML = payload.experiments.map(exp => `
+        <article class="card">
+          <div class="tag">实验三</div>
+          <div class="title">${exp.label}</div>
+          <div class="subtitle">${subtitles[exp.key]}</div>
+          ${metricBlock('success_once（至少一次成功）', exp.success_once, 'success_once')}
+          ${metricBlock('success_at_end（终态成功）', exp.success_at_end, 'success_at_end')}
+          ${metricBlock('平均 return', exp.avg_return, 'avg_return')}
+          ${metricBlock('平均 reward（per step）', exp.avg_reward, 'avg_reward')}
+        </article>
+      `).join('');
+    }
+
+    function levelClass(level) {
+      return 'level-' + level.toLowerCase();
+    }
+
+    function expClass(name) {
+      if (name === 'Train') return 'exp-train';
+      if (name === 'Test1') return 'exp-test1';
+      return 'exp-test2';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('level-table');
+      tbody.innerHTML = payload.level_rows.map(row => `
+        <tr>
+          <td class="exp-name ${expClass(row.experiment)}">${row.experiment}</td>
+          <td><span class="level-badge ${levelClass(row.level)}">${row.level}</span></td>
+          <td>${row.tasks}</td>
+          <td class="metric-blue">${pct(row.success_once)}</td>
+          <td class="metric-green">${pct(row.success_at_end)}</td>
+          <td class="metric-orange">${fixed(row.avg_return, 2)}</td>
+          <td><span class="metric-purple">${fixed(row.avg_reward, 4)}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    renderCards();
+    renderTable();
+  </script>
+</body>
+</html>
